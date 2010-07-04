@@ -144,3 +144,16 @@ var conversion = [
 [/\u04307/g,    '\u2116'], // а7 №
 [/i3/g,         '\u0457'], // i3 ї
 ];
+
+var conversion_len = conversion.length;
+
+function antconc_ucs8(antconc_text){
+    var ucs8_text = antconc_text;
+    var pattern, replacement;
+    for (var i = 0; i < conversion_len; i++) {
+        pattern     = conversion[i][0];
+        replacement = conversion[i][1];
+        ucs8_text   = ucs8_text.replace(pattern, replacement);
+    }
+    return ucs8_text
+}
