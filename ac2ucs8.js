@@ -175,7 +175,7 @@ function resetElementText( nodeObj, textToSet ) {
  * 
  * */
 
-function chElementTextToUCS8( nodeId, ucs8_text ) {
+function chElementTextToUCS8( nodeId ) {
     var el = document.getElementById( nodeId );
     var antconc_text = getElemText( el );
     var ucs8_text = antconc_ucs8( antconc_text );
