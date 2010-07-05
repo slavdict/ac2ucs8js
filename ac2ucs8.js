@@ -168,3 +168,16 @@ function resetElementText( nodeObj, textToSet ) {
     // Вставляем передаваемый текст
     nodeObj.appendChild(n);
 }
+
+/* Функция getElemText
+ * будет взята из slavdict_moodle/
+ * jstempate.js
+ * 
+ * */
+
+function chElementTextToUCS8( nodeId, ucs8_text ) {
+    var el = document.getElementById( nodeId );
+    var antconc_text = getElemText( el );
+    var ucs8_text = antconc_ucs8( antconc_text );
+    resetElementText( el, ucs8_text );
+}
