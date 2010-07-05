@@ -157,3 +157,16 @@ function antconc_ucs8(antconc_text){
     }
     return ucs8_text
 }
+
+function resetElementText( nodeId, textToSet ) {
+    var el  = document.getElementById( nodeId );
+    var n   = document.createTextNode( textToSet );
+    
+    var children = el.childNodes;
+    // Удаляем всё содержимое элемента nodeId
+    while (children.length > 0) {
+        el.removeChild(children.item(0));
+    }
+    // Вставляем передаваемый текст
+    el.appendChild(n);
+}
