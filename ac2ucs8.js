@@ -1,4 +1,4 @@
-function antconc_ucs8(antconc_text, affix){
+function antconc_ucs8(antconc_text, isAffix){
     var ucs8_text = antconc_text;
 
     var A = [
@@ -154,7 +154,7 @@ function antconc_ucs8(antconc_text, affix){
         [/i3/g,         '\u0457'] // i3 ї
     ];
     
-    if (!affix) {
+    if (!isAffix) {
         // Полный набор правил конвертации
         var conversion = A.concat(B, C);
     } else {
@@ -237,21 +237,21 @@ function getElementsByClassName( classname, node ) {
     return a;
 }
 
-function elementToUCS8( node ) {
+function elementToUCS8( node, isAffix ) {
     var antconc_text = getElemText( node );
-    var ucs8_text = antconc_ucs8( antconc_text );
+    var ucs8_text = antconc_ucs8( antconc_text, isAffix );
     resetElementText( node, ucs8_text );
 }
 
-function chElementTextToUCS8( nodeId ) {
+function chElementTextToUCS8( nodeId, isAffix ) {
     var node = document.getElementById( nodeId );
-    elementToUCS8( node );
+    elementToUCS8( node, isAffix );
 }
 
-function chElementClassTextToUCS8( nodeId, className ) {
+function chElementClassTextToUCS8( nodeId, className, isAffix ) {
     var node = document.getElementById( nodeId );
     var nodeList = getElementsByClassName( className, node );
     for (var i = 0; i < nodeList.length; i++) {
-        elementToUCS8( nodeList[i] );
+        elementToUCS8( nodeList[i], isAffix );
     }
 }
