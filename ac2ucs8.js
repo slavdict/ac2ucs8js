@@ -1,3 +1,7 @@
+function strip(str) {
+    return str.replace(/^\s+/, '').replace(/\s+$/, '');
+}
+
 function antconc_ucs8(antconc_text, isAffix){
     var ucs8_text = antconc_text;
 
@@ -226,6 +230,12 @@ function getElemText(node){
     }(node));
 }
 
+/* В тексте мудла тоже есть реализация этой функции,
+ * поэтому она переопределяется при загрузке.
+ * Надо использовать другую сигнатуру
+ *
+ * function getElementsByClassName(oElm, strTagName, oClassNames)
+ *
 function getElementsByClassName( classname, node ) {
     if (!node) { node = document.getElementsByTagName('body')[0]; } 
     var a = [], re = new RegExp('\\b' + classname + '\\b');
@@ -233,14 +243,46 @@ function getElementsByClassName( classname, node ) {
     for (var i = 0, j = els.length; i < j; i++) { 
         if ( re.test(els[i].className) ) { a.push(els[i]); } 
     } 
-    
     return a;
 }
 
+*/
+function getElementsByClassName(oElm, strTagName, oClassNames){
+	var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
+	var arrReturnElements = new Array();
+	var arrRegExpClassNames = new Array();
+	if(typeof oClassNames == "object"){
+		for(var i=0; i<oClassNames.length; i++){
+			arrRegExpClassNames.push(new RegExp("(^|\\s)" + oClassNames[i].replace(/\-/g, "\\-") + "(\\s|$)"));
+		}
+	}
+	else{
+		arrRegExpClassNames.push(new RegExp("(^|\\s)" + oClassNames.replace(/\-/g, "\\-") + "(\\s|$)"));
+	}
+	var oElement;
+	var bMatchesAll;
+	for(var j=0; j<arrElements.length; j++){
+		oElement = arrElements[j];
+		bMatchesAll = true;
+		for(var k=0; k<arrRegExpClassNames.length; k++){
+			if(!arrRegExpClassNames[k].test(oElement.className)){
+				bMatchesAll = false;
+				break;
+			}
+		}
+		if(bMatchesAll){
+			arrReturnElements.push(oElement);
+		}
+	}
+	return (arrReturnElements)
+}
+
 function elementToUCS8( node, isAffix ) {
-    var antconc_text = getElemText( node );
-    var ucs8_text = antconc_ucs8( antconc_text, isAffix );
-    resetElementText( node, ucs8_text );
+    var antconc_text = strip( getElemText( node ) );
+    if (Boolean(antconc_text)) {
+        var ucs8_text = antconc_ucs8( antconc_text, isAffix );
+        resetElementText( node, ucs8_text );
+    }
 }
 
 function chElementTextToUCS8( nodeId, isAffix ) {
@@ -248,9 +290,8 @@ function chElementTextToUCS8( nodeId, isAffix ) {
     elementToUCS8( node, isAffix );
 }
 
-function chElementClassTextToUCS8( nodeId, className, isAffix ) {
-    var node = document.getElementById( nodeId );
-    var nodeList = getElementsByClassName( className, node );
+function chElementClassTextToUCS8( className, isAffix ) {
+    var nodeList = getElementsByClassName( document, '*', [className] );
     for (var i = 0; i < nodeList.length; i++) {
         elementToUCS8( nodeList[i], isAffix );
     }
