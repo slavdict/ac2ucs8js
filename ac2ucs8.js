@@ -142,7 +142,7 @@ var conversion = [
 [/\u04303/g,    '\u0491'], // а3 ґ
 [/\u044d1/g,    '\u0451'], // э1 ё
 [/\u04307/g,    '\u2116'], // а7 №
-[/i3/g,         '\u0457'], // i3 ї
+[/i3/g,         '\u0457'] // i3 ї
 ];
 
 var conversion_len = conversion.length;
@@ -169,11 +169,41 @@ function resetElementText( nodeObj, textToSet ) {
     nodeObj.appendChild(n);
 }
 
-/* Функция getElemText
- * будет взята из slavdict_moodle/
- * jstempate.js
- * 
- * */
+function getElemText(node){
+    return node.text || node.textContent || (function(node){
+        var _result = "";
+        if (node == null) {
+            return _result;
+        }
+        var childrens = node.childNodes;
+        var i = 0;
+        while (i < childrens.length) {
+            var child = childrens.item(i);
+            switch (child.nodeType) {
+                case 1: // ELEMENT_NODE
+                case 5: // ENTITY_REFERENCE_NODE
+                    _result += arguments.callee(child);
+                    break;
+                case 3: // TEXT_NODE
+                case 2: // ATTRIBUTE_NODE
+                case 4: // CDATA_SECTION_NODE
+                    _result += child.nodeValue;
+                    break;
+                case 6: // ENTITY_NODE
+                case 7: // PROCESSING_INSTRUCTION_NODE
+                case 8: // COMMENT_NODE
+                case 9: // DOCUMENT_NODE
+                case 10: // DOCUMENT_TYPE_NODE
+                case 11: // DOCUMENT_FRAGMENT_NODE
+                case 12: // NOTATION_NODE
+                // skip
+                break;
+            }
+            i++;
+        }
+        return _result;
+    }(node));
+}
 
 function chElementTextToUCS8( nodeId ) {
     var el = document.getElementById( nodeId );
