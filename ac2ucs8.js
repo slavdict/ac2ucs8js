@@ -1,7 +1,3 @@
-function strip(str) {
-    return str.replace(/^\s+/, '').replace(/\s+$/, '');
-}
-
 function antconc_ucs8(antconc_text, isAffix){
     var ucs8_text = antconc_text;
 
@@ -157,7 +153,7 @@ function antconc_ucs8(antconc_text, isAffix){
         [/\u04307/g,    '\u2116'], // а7 №
         [/i3/g,         '\u0457'] // i3 ї
     ];
-    
+
     if (!isAffix) {
         // Полный набор правил конвертации
         var conversion = A.concat(B, C);
@@ -181,118 +177,4 @@ function antconc_ucs8(antconc_text, isAffix){
         ucs8_text   = ucs8_text.replace(pattern, replacement);
     }
     return ucs8_text;
-}
-
-function resetElementText( nodeObj, textToSet ) {
-    var n = document.createTextNode( textToSet );
-    var children = nodeObj.childNodes;
-    // Удаляем всё содержимое элемента nodeId
-    while (children.length > 0) {
-        nodeObj.removeChild(children.item(0));
-    }
-    // Вставляем передаваемый текст
-    nodeObj.appendChild(n);
-}
-
-function getElemText(node){
-    return node.text || node.textContent || (function(node){
-        var _result = "";
-        if (node == null) {
-            return _result;
-        }
-        var childrens = node.childNodes;
-        var i = 0;
-        while (i < childrens.length) {
-            var child = childrens.item(i);
-            switch (child.nodeType) {
-                case 1: // ELEMENT_NODE
-                case 5: // ENTITY_REFERENCE_NODE
-                    _result += arguments.callee(child);
-                    break;
-                case 3: // TEXT_NODE
-                case 2: // ATTRIBUTE_NODE
-                case 4: // CDATA_SECTION_NODE
-                    _result += child.nodeValue;
-                    break;
-                case 6: // ENTITY_NODE
-                case 7: // PROCESSING_INSTRUCTION_NODE
-                case 8: // COMMENT_NODE
-                case 9: // DOCUMENT_NODE
-                case 10: // DOCUMENT_TYPE_NODE
-                case 11: // DOCUMENT_FRAGMENT_NODE
-                case 12: // NOTATION_NODE
-                // skip
-                break;
-            }
-            i++;
-        }
-        return _result;
-    }(node));
-}
-
-/* В тексте мудла тоже есть реализация этой функции,
- * поэтому она переопределяется при загрузке.
- * Надо использовать другую сигнатуру
- *
- * function getElementsByClassName(oElm, strTagName, oClassNames)
- *
-function getElementsByClassName( classname, node ) {
-    if (!node) { node = document.getElementsByTagName('body')[0]; } 
-    var a = [], re = new RegExp('\\b' + classname + '\\b');
-    els = node.getElementsByTagName('*');
-    for (var i = 0, j = els.length; i < j; i++) { 
-        if ( re.test(els[i].className) ) { a.push(els[i]); } 
-    } 
-    return a;
-}
-
-*/
-function getElementsByClassName(oElm, strTagName, oClassNames){
-	var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
-	var arrReturnElements = new Array();
-	var arrRegExpClassNames = new Array();
-	if(typeof oClassNames == "object"){
-		for(var i=0; i<oClassNames.length; i++){
-			arrRegExpClassNames.push(new RegExp("(^|\\s)" + oClassNames[i].replace(/\-/g, "\\-") + "(\\s|$)"));
-		}
-	}
-	else{
-		arrRegExpClassNames.push(new RegExp("(^|\\s)" + oClassNames.replace(/\-/g, "\\-") + "(\\s|$)"));
-	}
-	var oElement;
-	var bMatchesAll;
-	for(var j=0; j<arrElements.length; j++){
-		oElement = arrElements[j];
-		bMatchesAll = true;
-		for(var k=0; k<arrRegExpClassNames.length; k++){
-			if(!arrRegExpClassNames[k].test(oElement.className)){
-				bMatchesAll = false;
-				break;
-			}
-		}
-		if(bMatchesAll){
-			arrReturnElements.push(oElement);
-		}
-	}
-	return (arrReturnElements)
-}
-
-function elementToUCS8( node, isAffix ) {
-    var antconc_text = strip( getElemText( node ) );
-    if (Boolean(antconc_text)) {
-        var ucs8_text = antconc_ucs8( antconc_text, isAffix );
-        resetElementText( node, ucs8_text );
-    }
-}
-
-function chElementTextToUCS8( nodeId, isAffix ) {
-    var node = document.getElementById( nodeId );
-    elementToUCS8( node, isAffix );
-}
-
-function chElementClassTextToUCS8( className, isAffix ) {
-    var nodeList = getElementsByClassName( document, '*', [className] );
-    for (var i = 0; i < nodeList.length; i++) {
-        elementToUCS8( nodeList[i], isAffix );
-    }
 }
