@@ -178,3 +178,55 @@ function antconc_ucs8(antconc_text, isAffix){
     }
     return ucs8_text;
 }
+
+function antconc_civilrus_word(word){
+    var civilword = word;
+    var conversion = [
+        // Все буквы -- строчные.
+        [/\u0454/g, '\u0435'], // широкое есть --> е
+        [/\u0455/g, '\u0437'], // зело --> з
+        [/\u0456/g, '\u0438'], // и десятиричное --> и
+        [/\uA64B/g, '\u0443'], // монограф ук --> у
+        [/\u0479/g, '\u0443'], // диграф ук -->  у
+        [/\u0461/g, '\u043E'], // омега --> о
+        [/\u047B/g, '\u043E'], // широкое о --> о
+        [/\u047D/g, '\u043E'], // оле --> о
+        [/\u047F/g, '\u043E\u0442'], // от --> от
+        [SMALL_JATJ,        'е'],
+        [SMALL_I_AZ,        'я'],
+        [SMALL_JUS_MALYJ,   'я'],
+        [SMALL_KSI,         'кс'],
+        [SMALL_PSI,         'пс'],
+        [SMALL_FITA,        'ф'],
+        [u'а' + SMALL_IZHICA,   'ав'],
+        [u'е' + SMALL_IZHICA,   'ев'],
+        [SMALL_WIDE_ESTJ + SMALL_IZHICA,    'ев'],
+        [SMALL_IZHICA,      'и'],
+        [AKUT,          ''],
+        [GRAVIS,        ''],
+        [CIRKUMFLEKS,   ''],
+        [TITLO,         '*'],
+        [PAEROK,        'ъ'],
+        [VEDI_TITLO,    '*'],
+        [GLAGOLJ_TITLO, '*'],
+        [DOBRO_TITLO,   '*'],
+        [ZHIVETE_TITLO, '*'],
+        [ZEMLJA_TITLO,  '*'],
+        [NASH_TITLO,    '*'],
+        [ON_TITLO,      '*'],
+        [RCY_TITLO,     '*'],
+        [SLOVO_TITLO,   '*'],
+        [XER_TITLO,     '*'],
+        [CHERVJ_TITLO,  '*'],
+        [u'ъ$',         ''],
+    ];
+    var conversion_len = conversion.length;
+
+    var pattern, replacement;
+    for (var i = 0; i < conversion_len; i++) {
+        pattern     = conversion[i][0];
+        replacement = conversion[i][1];
+        ucs8_text   = ucs8_text.replace(pattern, replacement);
+    }
+    return ucs8_text;
+}
