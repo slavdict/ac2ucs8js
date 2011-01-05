@@ -184,41 +184,41 @@ function antconc_civilrus_word(word){
     var conversion = [
         // Все буквы -- строчные.
         [/\u0454/g, '\u0435'], // широкое есть --> е
+        [/\u0463/g, '\u0435'], // ять --> е
         [/\u0455/g, '\u0437'], // зело --> з
         [/\u0456/g, '\u0438'], // и десятиричное --> и
+        [/\u0475/g, '\u0438'], // ижица --> и
         [/\uA64B/g, '\u0443'], // монограф ук --> у
         [/\u0479/g, '\u0443'], // диграф ук -->  у
         [/\u0461/g, '\u043E'], // омега --> о
         [/\u047B/g, '\u043E'], // широкое о --> о
         [/\u047D/g, '\u043E'], // оле --> о
         [/\u047F/g, '\u043E\u0442'], // от --> от
-        [SMALL_JATJ,        'е'],
-        [SMALL_I_AZ,        'я'],
-        [SMALL_JUS_MALYJ,   'я'],
-        [SMALL_KSI,         'кс'],
-        [SMALL_PSI,         'пс'],
-        [SMALL_FITA,        'ф'],
-        [u'а' + SMALL_IZHICA,   'ав'],
-        [u'е' + SMALL_IZHICA,   'ев'],
-        [SMALL_WIDE_ESTJ + SMALL_IZHICA,    'ев'],
-        [SMALL_IZHICA,      'и'],
-        [AKUT,          ''],
-        [GRAVIS,        ''],
-        [CIRKUMFLEKS,   ''],
-        [TITLO,         '*'],
-        [PAEROK,        'ъ'],
-        [VEDI_TITLO,    '*'],
-        [GLAGOLJ_TITLO, '*'],
-        [DOBRO_TITLO,   '*'],
-        [ZHIVETE_TITLO, '*'],
-        [ZEMLJA_TITLO,  '*'],
-        [NASH_TITLO,    '*'],
-        [ON_TITLO,      '*'],
-        [RCY_TITLO,     '*'],
-        [SLOVO_TITLO,   '*'],
-        [XER_TITLO,     '*'],
-        [CHERVJ_TITLO,  '*'],
-        [u'ъ$',         ''],
+        [/\uA657/g, '\u044F'], // йотированное а --> я
+        [/\u0467/g, '\u044F'], // юс малый --> я
+        [/\u046F/g, '\u043A\u0441'], // кси --> кс
+        [/\u0471/g, '\u043F\u0441'], // пси --> пс
+        [/\u0473/g, '\u0444'], // фита --> ф
+        [/\u0430\u0475/g, '\u0430\u0432'], // а + ижица --> ав
+        [/\u0435\u0475/g, '\u0435\u0432'], // е + ижица --> ев
+        [/\u0454\u0475/g, '\u0435\u0432'], // широкое есть + ижица --> ев
+        [/'/g,   ''], // акут --x
+        [/`/g,   ''], // гравис --x
+        [/\^/g,  ''], // циркумфлекс --x
+        [/~/g,  '*'], // титло --> *
+        [/\u042A/g, '\u044A'], // паерок --> ъ
+        [/\u0412/g, '*'], // веди-титло --> *
+        [/\u0413/g, '*'], // глаголь-титло --> *
+        [/\u0414/g, '*'], // добро-титло --> *
+        [/\u0416/g, '*'], // живете-титло --> *
+        [/\u0417/g, '*'], // земля-титло --> *
+        [/\u041D/g, '*'], // наш-титло --> *
+        [/\u041E/g, '*'], // он-титло --> *
+        [/\u0420/g, '*'], // рцы-титло --> *
+        [/\u0421/g, '*'], // слово-титло --> *
+        [/\u0425/g, '*'], // хер-титло --> *
+        [/\u0427/g, '*'], // червь-титло --> *
+        [/\u044A$/g, ''], // конечный еръ --x
     ];
     var conversion_len = conversion.length;
 
@@ -226,7 +226,7 @@ function antconc_civilrus_word(word){
     for (var i = 0; i < conversion_len; i++) {
         pattern     = conversion[i][0];
         replacement = conversion[i][1];
-        ucs8_text   = ucs8_text.replace(pattern, replacement);
+        civilword   = civilword.replace(pattern, replacement);
     }
-    return ucs8_text;
+    return civilword;
 }
